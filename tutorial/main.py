@@ -102,4 +102,5 @@ def replace_one(person_id):
 
     person_collection.replace_one({"_id" : _id}, new_doc)
 
-replace_one('696fbc0ad8306498a77fff5b')
+
+""" deleting documents """
