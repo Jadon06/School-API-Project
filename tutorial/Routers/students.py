@@ -33,11 +33,13 @@ async def get_one_student(id: str):
 
 @router.post("/", response_model=pydantic_schemas.student_response)
 async def create_student(student: pydantic_schemas.student):
+    print(student)
     new_student = models.students(**student.dict())
     student_exists = await models.students.find_one({"email" : new_student.email})
     if student_exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, 
                             detail=f"Student with {new_student.email} already exists!!")
+    
     saved_student = await new_student.insert() # must insert a document into the collection to create it
     return saved_student
 
@@ -62,11 +64,3 @@ async def delete_student(id: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Student does not exist!")
     await models.students.delete(student)
 
-@router.put("/courses/{id}")
-async def choose_courses(id: str, courses: List[pydantic_schemas.course_schema]):
-    student = models.students(models.students.id == ObjectId(id))
-    if not student:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, 
-                            detail=f"student with id:{id} does not exist")
-    add_courses = await models.students(models.students.id == ObjectId(id)).update(AddToSet({"Courses" : courses}))
-    return {"status" : "courses have been added!"}

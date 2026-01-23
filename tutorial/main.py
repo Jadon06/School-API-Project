@@ -1,5 +1,5 @@
 import pprint
-from .Routers import students
+from .Routers import students, courses
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database import init_db
@@ -12,6 +12,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(students.router)
+app.include_router(courses.router)
 """ part 1 """
 
 # client = MongoClient(connection_string)
