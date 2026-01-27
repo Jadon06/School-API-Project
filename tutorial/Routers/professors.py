@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=pydantic_schemas.professor_response)
-async def create_professor(professor: pydantic_schemas.professor):
+async def create_professor(professor: pydantic_schemas.professor_create):
     prof = await documents.professors.find_one(documents.professors.email == professor.email)
     if prof:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, 

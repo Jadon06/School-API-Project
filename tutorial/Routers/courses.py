@@ -20,6 +20,14 @@ async def add_courses(id: str, courses: List[pydantic_schemas.course_add]):
     add_courses = await documents.students.find_one(documents.students.id == ObjectId(id)).update(Set({"courses" : courses}))
     return {"status" : "courses have been added!"}
 
+@router.put("/info/{course_code}", response_model=pydantic_schemas.course_response)
+async def update_course_info(course_code: str, course: pydantic_schemas.course_create):
+    course_found = await documents.courses.find_one(documents.courses.course_code == course_code)
+    if not course_found:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No course with {course_code} exists!")
+    updated_info = await documents.courses.find_one(documents.courses.course_code == course.course_code).update(Set(course.dict()))
+    return course_found
+
 @router.post("/")
 async def create_course(course: pydantic_schemas.course_create):   
     course_exists = await documents.courses.find_one(documents.courses.course_code == course.course_code)
