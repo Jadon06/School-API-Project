@@ -18,4 +18,4 @@ connection_string = f"mongodb+srv://jadonay:{password}@tutorial.uaj6tuy.mongodb.
 
 async def init_db():
     client = AsyncIOMotorClient(connection_string)
-    await init_beanie(database=client.production, document_models=[students, professors, courses]) # lsit document models here, otherwise they won't be initialized
+    await init_beanie(database=client["production"], document_models=[students, professors, courses]) # lsit document models here, otherwise they won't be initialized

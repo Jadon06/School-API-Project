@@ -31,7 +31,7 @@ async def get_one_student(id: str):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"student with {id} does not exist")
     return student
 
-@router.post("/", response_model=pydantic_schemas.student_response)
+@router.post("/", status_code= status.HTTP_201_CREATED, response_model=pydantic_schemas.student_response)
 async def create_student(student: pydantic_schemas.student):
     new_student = documents.students(**student.dict())
     student_exists = await documents.students.find_one({"email" : new_student.email})
@@ -42,7 +42,7 @@ async def create_student(student: pydantic_schemas.student):
     saved_student = await new_student.insert() # must insert a document into the collection to create it
     return saved_student
 
-@router.put("/{id}", response_model=pydantic_schemas.student_response)
+@router.put("/{id}")#, response_model=pydantic_schemas.student_response)
 async def update_user(id: str, student_info: pydantic_schemas.student):
     student = documents.students.find_one({"_id" : ObjectId(id)})
     if not student:
@@ -52,7 +52,7 @@ async def update_user(id: str, student_info: pydantic_schemas.student):
                   documents.students.first_name : student_info.first_name, 
                   documents.students.last_name : student_info.last_name}
     
-    await documents.students.find_one(documents.students.id == ObjectId(id)).update(Set(updates))
+    updated_student = await documents.students.find_one(documents.students.id == ObjectId(id)).update(Set(updates))
     return {"status" : "student info updated"}
     
     

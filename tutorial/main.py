@@ -3,14 +3,17 @@ from .Routers import students, courses, professors
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from .database import init_db
+import os
 
+os.environ["TESTING"] = "1"
+if os.getenv("TESTING") == "0":
+    print('done')
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        await init_db()
+        yield
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await init_db()
-    yield
-
-app = FastAPI(lifespan=lifespan)
+    app = FastAPI(lifespan=lifespan)
 
 app.include_router(students.router)
 app.include_router(courses.router)
