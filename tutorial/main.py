@@ -18,6 +18,7 @@ if os.getenv("TESTING") == "0":
 app.include_router(students.router)
 app.include_router(courses.router)
 app.include_router(professors.router)
+print("done")
 """ part 1 """
 
 # client = MongoClient(connection_string)
